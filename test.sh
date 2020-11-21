@@ -1,0 +1,1 @@
+python detect.py --weights weights/yolov4-p7.pt --img-size 1536
