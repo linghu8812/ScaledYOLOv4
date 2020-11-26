@@ -6,6 +6,7 @@ import torch.nn as nn
 import models
 from models.experimental import attempt_load
 from utils.activations import Mish
+from onnxsim import simplify
 
 
 if __name__ == '__main__':
@@ -56,7 +57,9 @@ if __name__ == '__main__':
 
         # Checks
         onnx_model = onnx.load(f)  # load onnx model
-        onnx.checker.check_model(onnx_model)  # check onnx model
+        model_simp, check = simplify(onnx_model)
+        assert check, "Simplified ONNX model could not be validated"
+        onnx.save(model_simp, f)
         # print(onnx.helper.printable_graph(onnx_model.graph))  # print a human readable model
         print('ONNX export success, saved as %s' % f)
     except Exception as e:
